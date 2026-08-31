@@ -1,4 +1,5 @@
 import CadenceGallery from "./components/cadence-gallery";
+import AgentToolsArt from "./components/agent-tools-art";
 import InventionDisclosureGallery from "./components/invention-disclosure-gallery";
 import TZHProductPreview from "./components/tzh-product-preview";
 import Image from "next/image";
@@ -13,7 +14,7 @@ const projects = [
   { number: "01", title: "TZH Sports Centre", type: "Independent full-stack platform", description: "Developed and maintained end to end: court bookings, social games, lessons, payments, revenue ledgers, memberships, vouchers, shop workflows, and admin operations.", className: "project-blue", href: "https://tzhsports.vercel.app/", visual: "product-stack" },
   { number: "02", title: "Schematic Migration Automation", type: "Intel · 2021—present", description: "Automated schematic and testbench migration for internal and external IP design teams.", className: "project-sand", image: "/images/work/schematic-migration-canvas.png", imageAlt: "Analog schematic canvas with circuit components and connections" },
   { number: "03", title: "Advanced Battery Test & Emulation", type: "Keysight · 2019—2021", description: "Software for advanced battery test and emulation, developed across UI, services, localisation, and APIs.", className: "project-red", image: "/images/work/advanced-battery-emulator.png", imageAlt: "Battery Emulator product interface showing battery status and diagnostic charts" },
-  { number: "04", title: "Engineering Agents", type: "Automation · Ongoing", description: "Practical AI agents for migration, design optimisation, and release-risk analysis.", className: "project-violet" },
+  { number: "04", title: "Engineering Agents", type: "Automation · Ongoing", description: "Practical AI agents for migration, design optimisation, and release-risk analysis.", className: "project-violet", visual: "agent-tools" },
 ];
 
 export default function Home() {
@@ -49,7 +50,7 @@ export default function Home() {
       <section className="work section" id="work" aria-labelledby="work-title">
         <div className="section-heading"><div><p className="eyebrow">SELECTED WORK</p><h2 id="work-title">Systems built for real engineering work.</h2></div><p>Selected work across EDA automation, test software, and AI-enabled workflows.</p></div>
         <div className="projects">
-          {projects.map((project) => <article className={`project-card ${project.className}`} key={project.number}><div className="project-art">{project.visual === "product-stack" ? <TZHProductPreview /> : project.image && <Image src={project.image} alt={project.imageAlt ?? ""} fill sizes="(max-width: 700px) 92vw, 72rem" />}<span>{project.number}</span></div><div className="project-details"><p>{project.type}</p><h3>{project.title}</h3><p className="project-description">{project.description}</p><a href={project.href ?? "#contact"} target={project.href ? "_blank" : undefined} rel={project.href ? "noreferrer" : undefined} aria-label={`Read more about ${project.title}`}>{project.href ? "Visit platform" : "View story"} <span aria-hidden="true">↗</span></a></div></article>)}
+          {projects.map((project) => <article className={`project-card ${project.className}`} key={project.number}><div className="project-art">{project.visual === "product-stack" ? <TZHProductPreview /> : project.visual === "agent-tools" ? <AgentToolsArt /> : project.image && <Image src={project.image} alt={project.imageAlt ?? ""} fill sizes="(max-width: 700px) 92vw, 72rem" />}<span>{project.number}</span></div><div className="project-details"><p>{project.type}</p><h3>{project.title}</h3><p className="project-description">{project.description}</p><a href={project.href ?? "#contact"} target={project.href ? "_blank" : undefined} rel={project.href ? "noreferrer" : undefined} aria-label={`Read more about ${project.title}`}>{project.href ? "Visit platform" : "View story"} <span aria-hidden="true">↗</span></a></div></article>)}
         </div>
       </section>
 
