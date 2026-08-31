@@ -32,7 +32,6 @@ export default function Home() {
           <p className="hero-intro">I&apos;m Zhihong, a software engineer building automation and AI-powered tools that help engineering teams do their best work.</p>
           <a className="button button-light" href="#about">Explore my work <span aria-hidden="true">↓</span></a>
         </div>
-        <div className="hero-stamp" aria-hidden="true"><span>ZH</span><span>EST. 2026</span></div>
         <p className="hero-caption">Automation, engineering systems, and practical AI agents.</p>
       </section>
 

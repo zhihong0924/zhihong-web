@@ -33,6 +33,7 @@ This is a personal website. Favor a polished, fast, accessible, and low-maintena
 - Check responsive layout, readable type, keyboard navigation, semantic HTML, and sufficient colour contrast.
 - Prefer reusable components and design tokens over one-off styles.
 - Avoid unnecessary animation and client-side JavaScript.
+- After any user-visible UI change, include the local preview URL [Open the UI in Codex](http://localhost:3000) in the final response. This lets the user open Codex's web-preview card and leave visual comments directly on the page. State if the local dev server must be started with `npm run dev` first.
 
 ## Data and security
 
