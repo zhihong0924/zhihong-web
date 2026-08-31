@@ -6,7 +6,7 @@ The homepage is a single-page personal portfolio that introduces Zhihong, highli
 
 ## Design direction
 
-The page takes inspiration from the reference site's editorial hierarchy: restrained navigation, a high-contrast hero, oversized typography, and image-led feature cards. It remains original through its own indigo colour system, abstract CSS artwork, placeholder content, and site structure.
+The page takes inspiration from the reference site's editorial hierarchy: restrained navigation, a high-contrast hero, oversized typography, and image-led feature cards. It remains original through its own indigo colour system, abstract CSS artwork, placeholder content, and site structure. The light content sections use deliberately distinct neutral fields: warm off-white for About, cool off-white with white project cards for Selected Work, and a neutral grey for Recognition & Impact; the hero and contact areas remain the dark visual anchors.
 
 ## Page sections
 
