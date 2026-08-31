@@ -27,6 +27,7 @@ This is a personal website. Favor a polished, fast, accessible, and low-maintena
 6. Run `npm run lint` and `npm run build` before completion.
 7. Cross-check the completed behavior against the relevant documentation and update anything stale.
 8. Commit every completed feature or cohesive user-visible change after it passes validation. Stage only files belonging to that change, use a concise conventional commit message, and report the resulting commit hash. Do not include unrelated user changes, `.env` files, secrets, or incomplete work.
+9. When the user asks to undo an already committed change, identify the exact commit and use `git revert <commit>` to create its traceable inverse. Do not manually recreate the old code and commit that recreation. Only rewrite Git history when the user explicitly requests it.
 
 ## UI quality
 
