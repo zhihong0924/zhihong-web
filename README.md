@@ -28,3 +28,8 @@ npm run start  # run production build locally
 - ESLint with Next.js Core Web Vitals rules
 
 Database, authentication, i18n, UI kits, testing, and deployment integrations can be added when a concrete site feature requires them.
+
+## Project guidance
+
+- [AGENTS.md](AGENTS.md) defines the development workflow and quality bar.
+- [docs/database-migrations.md](docs/database-migrations.md) defines local and production database safety rules.
