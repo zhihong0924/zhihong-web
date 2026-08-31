@@ -1,3 +1,5 @@
+import CadenceGallery from "./components/cadence-gallery";
+
 const focusAreas = [
   ["01", "Engineering automation", "Building reliable flows that reduce manual effort and help teams move faster."],
   ["02", "AI agents", "Applying MCP, tool calling, and orchestration to practical engineering workflows."],
@@ -53,7 +55,15 @@ export default function Home() {
         <p className="eyebrow">RECOGNITION &amp; IMPACT</p>
         <div className="notes-heading"><h2 id="notes-title">Work worth<br />{" "}talking about.</h2><a className="text-link" href="https://www.linkedin.com/in/zhi-hong-chong/" target="_blank" rel="noreferrer">View my profile <span aria-hidden="true">↗</span></a></div>
         <div className="note-list">
-          <article><span>01</span><p><strong>CadenceConnect speaker.</strong> Presented migration automation and field outcomes in 2024, 2025, and 2026.</p><time dateTime="2024">SPEAKER</time></article>
+          <article className="cadence-highlight">
+            <span>01</span>
+            <p><strong>CadenceConnect speaker.</strong> Presented migration automation and field outcomes in 2024, 2025, and 2026.</p>
+            <time dateTime="2024">SPEAKER</time>
+            <details className="cadence-details">
+              <summary>View speaker gallery <span aria-hidden="true">↓</span></summary>
+              <CadenceGallery />
+            </details>
+          </article>
           <article><span>02</span><p><strong>Three invention disclosures.</strong> Two were recognised with commercialization awards at Keysight.</p><time dateTime="2019">INVENTOR</time></article>
           <article><span>03</span><p><strong>Measured workflow impact.</strong> ~80% faster schematic and testbench migration turnaround, with 100% netlistable schematics.</p><time dateTime="2021">INTEL</time></article>
         </div>
