@@ -20,6 +20,8 @@ The page takes inspiration from the reference site's editorial hierarchy: restra
 
 Professional biography, selected experience, achievement, email, and LinkedIn copy is drawn from the résumé supplied by Chong Zhi Hong. The TZH Sports Centre platform summary is sourced from the user's stated ownership and the project's repository documentation. Keep this content centralised in the homepage component until a content model or CMS is justified. Do not publish the résumé phone number by default.
 
+The TZH Sports Centre card uses the supplied booking, shop, and lesson screens under `public/images/work/`. Present them as a layered three-phone composition, with booking in front and shop/lessons behind it, to communicate the platform's breadth without stretching portrait interfaces into landscape crops. On mobile, show only the booking screen to preserve clarity.
+
 The CadenceConnect speaker gallery uses user-supplied photos and certificates from 2024–2026. Store those images under `public/images/cadence-connect/` and reveal them through a native disclosure control in the CadenceConnect recognition item. Use compact proof tiles rather than a prominent image gallery so lower-resolution source imagery is not enlarged unnecessarily. A selected tile opens in an accessible in-page lightbox using the original source file, with backdrop, close button, and Escape-key closing behavior.
 
 The Advanced Battery Test & Emulation project card uses the supplied Battery Emulator product screenshot from `public/images/work/advanced-battery-emulator.png`. Present it as a tightly cropped, darkened interface detail with a subtle red overlay so it retains visual consistency with the rest of the portfolio while showing genuine product work.
