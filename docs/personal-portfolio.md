@@ -24,6 +24,8 @@ The CadenceConnect speaker gallery uses user-supplied photos and certificates fr
 
 The Advanced Battery Test & Emulation project card uses the supplied Battery Emulator product screenshot from `public/images/work/advanced-battery-emulator.png`. Present it as a tightly cropped, darkened interface detail with a subtle red overlay so it retains visual consistency with the rest of the portfolio while showing genuine product work.
 
+The Schematic Migration Automation project card uses the supplied schematic canvas from `public/images/work/schematic-migration-canvas.png`. Preserve the circuit detail with a dark, lightly teal-tinted treatment that complements the product card system without making the technical visual feel like a raw screenshot.
+
 ## Acceptance criteria
 
 - Works as a single static page without a database or client-side JavaScript.

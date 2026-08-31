@@ -9,7 +9,7 @@ const focusAreas = [
 
 const projects = [
   { number: "01", title: "TZH Sports Centre", type: "Independent full-stack platform", description: "Developed and maintained end to end: court bookings, social games, lessons, payments, revenue ledgers, memberships, vouchers, shop workflows, and admin operations.", className: "project-blue", href: "https://tzhsports.vercel.app/" },
-  { number: "02", title: "Schematic Migration Automation", type: "Intel · 2021—present", description: "Automated schematic and testbench migration for internal and external IP design teams.", className: "project-sand" },
+  { number: "02", title: "Schematic Migration Automation", type: "Intel · 2021—present", description: "Automated schematic and testbench migration for internal and external IP design teams.", className: "project-sand", image: "/images/work/schematic-migration-canvas.png", imageAlt: "Analog schematic canvas with circuit components and connections" },
   { number: "03", title: "Advanced Battery Test & Emulation", type: "Keysight · 2019—2021", description: "Software for advanced battery test and emulation, developed across UI, services, localisation, and APIs.", className: "project-red", image: "/images/work/advanced-battery-emulator.png", imageAlt: "Battery Emulator product interface showing battery status and diagnostic charts" },
   { number: "04", title: "Engineering Agents", type: "Automation · Ongoing", description: "Practical AI agents for migration, design optimisation, and release-risk analysis.", className: "project-violet" },
 ];
