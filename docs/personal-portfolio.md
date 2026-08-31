@@ -30,7 +30,7 @@ The Advanced Battery Test & Emulation project card uses the supplied Battery Emu
 
 The Schematic Migration Automation project card uses the supplied schematic canvas from `public/images/work/schematic-migration-canvas.png`. Preserve the circuit detail with a dark, lightly teal-tinted treatment that complements the product card system without making the technical visual feel like a raw screenshot.
 
-The Engineering Agents card uses supplied Codex and GitHub Copilot reference artwork as two compact, cropped tool tiles. Keep the presentation minimal: show the recognisable tool marks without reproducing product interfaces or adding a mock workspace.
+The Engineering Agents card uses supplied Codex and GitHub Copilot reference artwork as two equal, edge-to-edge image fields. Keep the presentation minimal: no background artwork, frames, or mock workspace.
 
 ## Acceptance criteria
 
