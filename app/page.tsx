@@ -5,9 +5,10 @@ const focusAreas = [
 ];
 
 const projects = [
-  { number: "01", title: "Schematic Migration Automation", type: "Intel · 2021—present", className: "project-blue" },
-  { number: "02", title: "Advanced Battery Test & Emulation", type: "Keysight · 2019—2021", className: "project-sand" },
-  { number: "03", title: "Engineering Agents", type: "Automation · Ongoing", className: "project-red" },
+  { number: "01", title: "TZH Sports Centre", type: "Independent full-stack platform", description: "Developed and maintained end to end: court bookings, social games, lessons, payments, revenue ledgers, memberships, vouchers, shop workflows, and admin operations.", className: "project-blue", href: "https://tzhsports.vercel.app/" },
+  { number: "02", title: "Schematic Migration Automation", type: "Intel · 2021—present", description: "Automated schematic and testbench migration for internal and external IP design teams.", className: "project-sand" },
+  { number: "03", title: "Advanced Battery Test & Emulation", type: "Keysight · 2019—2021", description: "Software for advanced battery test and emulation, developed across UI, services, localisation, and APIs.", className: "project-red" },
+  { number: "04", title: "Engineering Agents", type: "Automation · Ongoing", description: "Practical AI agents for migration, design optimisation, and release-risk analysis.", className: "project-violet" },
 ];
 
 export default function Home() {
@@ -44,17 +45,17 @@ export default function Home() {
       <section className="work section" id="work" aria-labelledby="work-title">
         <div className="section-heading"><div><p className="eyebrow">SELECTED WORK</p><h2 id="work-title">Systems built for real engineering work.</h2></div><p>Selected work across EDA automation, test software, and AI-enabled workflows.</p></div>
         <div className="projects">
-          {projects.map((project) => <article className={`project-card ${project.className}`} key={project.number}><div className="project-art" aria-hidden="true"><span>{project.number}</span></div><div className="project-details"><p>{project.type}</p><h3>{project.title}</h3><a href="#contact" aria-label={`Read more about ${project.title}`}>View story <span aria-hidden="true">↗</span></a></div></article>)}
+          {projects.map((project) => <article className={`project-card ${project.className}`} key={project.number}><div className="project-art" aria-hidden="true"><span>{project.number}</span></div><div className="project-details"><p>{project.type}</p><h3>{project.title}</h3><p className="project-description">{project.description}</p><a href={project.href ?? "#contact"} target={project.href ? "_blank" : undefined} rel={project.href ? "noreferrer" : undefined} aria-label={`Read more about ${project.title}`}>{project.href ? "Visit platform" : "View story"} <span aria-hidden="true">↗</span></a></div></article>)}
         </div>
       </section>
 
       <section className="notes section" id="notes" aria-labelledby="notes-title">
-        <p className="eyebrow">SELECTED HIGHLIGHTS</p>
-        <div className="notes-heading"><h2 id="notes-title">Results that<br />{" "}keep compounding.</h2><a className="text-link" href="https://www.linkedin.com/in/zhi-hong-chong/" target="_blank" rel="noreferrer">View my profile <span aria-hidden="true">↗</span></a></div>
+        <p className="eyebrow">RECOGNITION &amp; IMPACT</p>
+        <div className="notes-heading"><h2 id="notes-title">Work worth<br />{" "}talking about.</h2><a className="text-link" href="https://www.linkedin.com/in/zhi-hong-chong/" target="_blank" rel="noreferrer">View my profile <span aria-hidden="true">↗</span></a></div>
         <div className="note-list">
-          <article><span>01</span><p>~80% faster schematic and testbench migration turnaround, with 100% netlistable schematics.</p><time dateTime="2021">INTEL</time></article>
-          <article><span>02</span><p>Presented migration automation and field outcomes at CadenceConnect 2024, 2025, and 2026.</p><time dateTime="2024">EDA</time></article>
-          <article><span>03</span><p>Three invention disclosures, including two recognised with commercialization awards.</p><time dateTime="2019">KEYSIGHT</time></article>
+          <article><span>01</span><p><strong>CadenceConnect speaker.</strong> Presented migration automation and field outcomes in 2024, 2025, and 2026.</p><time dateTime="2024">SPEAKER</time></article>
+          <article><span>02</span><p><strong>Three invention disclosures.</strong> Two were recognised with commercialization awards at Keysight.</p><time dateTime="2019">INVENTOR</time></article>
+          <article><span>03</span><p><strong>Measured workflow impact.</strong> ~80% faster schematic and testbench migration turnaround, with 100% netlistable schematics.</p><time dateTime="2021">INTEL</time></article>
         </div>
       </section>
 
