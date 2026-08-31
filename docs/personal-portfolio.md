@@ -22,6 +22,8 @@ Professional biography, selected experience, achievement, email, and LinkedIn co
 
 The CadenceConnect speaker gallery uses user-supplied photos and certificates from 2024–2026. Store those images under `public/images/cadence-connect/` and reveal them through a native disclosure control in the CadenceConnect recognition item. Use compact proof tiles rather than a prominent image gallery so lower-resolution source imagery is not enlarged unnecessarily. A selected tile opens in an accessible in-page lightbox using the original source file, with backdrop, close button, and Escape-key closing behavior.
 
+The Advanced Battery Test & Emulation project card uses the supplied Battery Emulator product screenshot from `public/images/work/advanced-battery-emulator.png`. Present it as a tightly cropped, darkened interface detail with a subtle red overlay so it retains visual consistency with the rest of the portfolio while showing genuine product work.
+
 ## Acceptance criteria
 
 - Works as a single static page without a database or client-side JavaScript.
