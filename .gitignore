@@ -10,6 +10,7 @@
 
 # local environment files
 .env*.local
+.env
 
 # logs
 npm-debug.log*
@@ -20,3 +21,4 @@ pnpm-debug.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+.neon
