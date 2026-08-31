@@ -18,7 +18,7 @@ The page takes inspiration from the reference site's editorial hierarchy: restra
 
 ## Content strategy
 
-Professional biography, selected experience, achievement, email, and LinkedIn copy is drawn from the résumé supplied by Chong Zhi Hong. The TZH Sports Centre platform summary is sourced from the user's stated ownership and the project's repository documentation. Keep this content centralised in the homepage component until a content model or CMS is justified. Do not publish the résumé phone number by default.
+Professional biography, selected experience, achievement, email, and LinkedIn copy is drawn from the résumé supplied by Chong Zhi Hong. The TZH Sports Centre platform summary is sourced from the user's stated ownership and the project's repository documentation. Keep this content centralised in the homepage component until a content model or CMS is justified. The phone number is published in the contact section only with the user's explicit approval.
 
 The TZH Sports Centre card uses the supplied booking, shop, and lesson screens under `public/images/work/`. Present them as a layered three-phone composition, with booking in front and shop/lessons behind it, to communicate the platform's breadth without stretching portrait interfaces into landscape crops. On mobile, show only the booking screen to preserve clarity.
 

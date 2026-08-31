@@ -79,7 +79,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="contact" id="contact" aria-labelledby="contact-title"><p className="eyebrow light">GET IN TOUCH</p><h2 id="contact-title">Let&apos;s make<br />{" "}<em>something useful.</em></h2><a className="button button-light" href="mailto:zhihong0924@gmail.com">zhihong0924@gmail.com <span aria-hidden="true">↗</span></a><p className="contact-note">Available for thoughtful engineering and automation conversations.</p></section>
+      <section className="contact" id="contact" aria-labelledby="contact-title"><p className="eyebrow light">GET IN TOUCH</p><h2 id="contact-title">Let&apos;s make<br />{" "}<em>something useful.</em></h2><a className="button button-light" href="mailto:zhihong0924@gmail.com">zhihong0924@gmail.com <span aria-hidden="true">↗</span></a><div className="contact-links" aria-label="Other ways to get in touch"><a href="https://www.linkedin.com/in/zhi-hong-chong/" target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a href="tel:+60134044212">+60 13-404 4212 <span aria-hidden="true">↗</span></a></div><p className="contact-note">Available for thoughtful engineering and automation conversations.</p></section>
       <footer><span>© 2026 Chong Zhi Hong</span><a href="#top">Back to top ↑</a></footer>
     </main>
   );
