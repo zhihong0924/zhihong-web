@@ -1,4 +1,5 @@
 import CadenceGallery from "./components/cadence-gallery";
+import InventionDisclosureGallery from "./components/invention-disclosure-gallery";
 import TZHProductPreview from "./components/tzh-product-preview";
 import Image from "next/image";
 
@@ -61,12 +62,20 @@ export default function Home() {
             <span>01</span>
             <p><strong>CadenceConnect speaker.</strong> Presented migration automation and field outcomes in 2024, 2025, and 2026.</p>
             <time dateTime="2024">SPEAKER</time>
-            <details className="cadence-details">
+            <details className="recognition-details">
               <summary>View speaker gallery <span aria-hidden="true">↓</span></summary>
               <CadenceGallery />
             </details>
           </article>
-          <article><span>02</span><p><strong>Three invention disclosures.</strong> Two were recognised with commercialization awards at Keysight.</p><time dateTime="2019">INVENTOR</time></article>
+          <article>
+            <span>02</span>
+            <p><strong>Three invention disclosures.</strong> Two were recognised with commercialization awards at Keysight.</p>
+            <time dateTime="2019">INVENTOR</time>
+            <details className="recognition-details">
+              <summary>View invention photos <span aria-hidden="true">↓</span></summary>
+              <InventionDisclosureGallery />
+            </details>
+          </article>
           <article><span>03</span><p><strong>Measured workflow impact.</strong> ~80% faster schematic and testbench migration turnaround, with 100% netlistable schematics.</p><time dateTime="2021">INTEL</time></article>
         </div>
       </section>

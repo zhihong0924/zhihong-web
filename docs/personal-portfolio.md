@@ -24,6 +24,8 @@ The TZH Sports Centre card uses the supplied booking, shop, and lesson screens u
 
 The CadenceConnect speaker gallery uses user-supplied photos and certificates from 2024–2026. Store those images under `public/images/cadence-connect/` and reveal them through a native disclosure control in the CadenceConnect recognition item. Use compact proof tiles rather than a prominent image gallery so lower-resolution source imagery is not enlarged unnecessarily. A selected tile opens in an accessible in-page lightbox using the original source file, with backdrop, close button, and Escape-key closing behavior.
 
+The invention-disclosure recognition item follows the same disclosure and lightbox pattern. Store public proof images under `public/images/invention-disclosures/`; retain unedited source files only under the ignored `.private-assets/` directory when they contain metadata or details that should not be deployed.
+
 The Advanced Battery Test & Emulation project card uses the supplied Battery Emulator product screenshot from `public/images/work/advanced-battery-emulator.png`. Present it as a tightly cropped, darkened interface detail with a subtle red overlay so it retains visual consistency with the rest of the portfolio while showing genuine product work.
 
 The Schematic Migration Automation project card uses the supplied schematic canvas from `public/images/work/schematic-migration-canvas.png`. Preserve the circuit detail with a dark, lightly teal-tinted treatment that complements the product card system without making the technical visual feel like a raw screenshot.
