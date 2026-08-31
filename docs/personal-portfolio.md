@@ -18,7 +18,7 @@ The page takes inspiration from the reference site's editorial hierarchy: restra
 
 ## Content strategy
 
-All current biography, project, and contact copy is placeholder content. Keep content centralised in the homepage component until a content model or CMS is justified.
+Professional biography, selected experience, achievement, email, and LinkedIn copy is drawn from the résumé supplied by Chong Zhi Hong. Keep this content centralised in the homepage component until a content model or CMS is justified. Do not publish the résumé phone number by default.
 
 ## Acceptance criteria
 
