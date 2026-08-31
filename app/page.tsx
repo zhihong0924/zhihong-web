@@ -19,7 +19,7 @@ export default function Home() {
   return (
     <main>
       <nav className="site-nav" aria-label="Primary navigation">
-        <a className="wordmark" href="#top" aria-label="Zhihong home">ZH<span>·</span>H</a>
+        <a className="wordmark" href="#top" aria-label="Chong Zhi Hong home"><span className="wordmark-initials">ZHI HONG</span><Image className="wordmark-signature" src="/images/branding/chong-signature-modern.png" alt="" width={1672} height={941} /></a>
         <div className="nav-links"><a href="#about">About</a><a href="#work">Work</a><a href="#notes">Notes</a></div>
         <a className="nav-contact" href="#contact">Let&apos;s talk <span aria-hidden="true">↗</span></a>
       </nav>
