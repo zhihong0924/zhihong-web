@@ -15,6 +15,7 @@ export default function PortfolioChat() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([openingMessage]);
   const [isSending, setIsSending] = useState(false);
+  const [isWarmingUp, setIsWarmingUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
@@ -32,6 +33,8 @@ export default function PortfolioChat() {
     setInput("");
     setError(null);
     setIsSending(true);
+    setIsWarmingUp(false);
+    const warmupTimer = window.setTimeout(() => setIsWarmingUp(true), 3_000);
 
     try {
       const response = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: nextMessages.slice(-6) }) });
@@ -41,7 +44,9 @@ export default function PortfolioChat() {
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : "The portfolio assistant is unavailable.");
     } finally {
+      window.clearTimeout(warmupTimer);
       setIsSending(false);
+      setIsWarmingUp(false);
       inputRef.current?.focus();
     }
   }
@@ -62,7 +67,7 @@ export default function PortfolioChat() {
         <div className="portfolio-chat-topline"><span>ASK ZHIHONG</span><span>Public portfolio knowledge</span></div>
         <div className="portfolio-chat-messages" ref={messagesRef} aria-live="polite">
           {messages.map((message, index) => <p className={`portfolio-chat-message ${message.role}`} key={`${message.role}-${index}`}>{message.content}</p>)}
-          {isSending && <p className="portfolio-chat-message assistant loading">Thinking<span aria-hidden="true">…</span></p>}
+          {isSending && <p className="portfolio-chat-message assistant loading">{isWarmingUp ? "Starting the AI assistant — this can take up to a minute on its first request." : "Thinking…"}</p>}
         </div>
         {messages.length === 1 && <div className="portfolio-chat-suggestions" aria-label="Suggested questions">
           {suggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => void sendMessage(suggestion)} disabled={isSending}>{suggestion} <span aria-hidden="true">↗</span></button>)}

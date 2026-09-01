@@ -6,6 +6,8 @@ const MODAL_API_BASE_URL = process.env.MODAL_API_BASE_URL ?? "https://inference.
 const MAX_MESSAGES = 6;
 const MAX_MESSAGE_LENGTH = 700;
 const TRANSIENT_MODAL_STATUSES = new Set([429, 502, 503, 504]);
+const COLD_START_RETRY_DELAYS = [0, 2_000, 4_000, 8_000, 12_000, 16_000];
+const CHAT_REQUEST_WINDOW_MS = 52_000;
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -82,41 +84,59 @@ export async function POST(request: Request) {
 
   try {
     let response: Response | undefined;
+    let lastRequestError: unknown;
+    const deadline = Date.now() + CHAT_REQUEST_WINDOW_MS;
 
-    for (const retryDelay of [0, 1_500, 3_000]) {
+    for (const [attempt, retryDelay] of COLD_START_RETRY_DELAYS.entries()) {
       if (retryDelay) {
         await new Promise((resolve) => setTimeout(resolve, retryDelay));
       }
 
-      response = await fetch(`${MODAL_API_BASE_URL}/chat/completions`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${modalToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: modalModelId,
-          messages: [{ role: "system", content: portfolioContext }, ...messages],
-          max_tokens: 280,
-          temperature: 0.2,
-        }),
-        signal: AbortSignal.timeout(45_000),
-        cache: "no-store",
-      });
+      const remainingTime = deadline - Date.now();
+      if (remainingTime < 1_500) {
+        break;
+      }
 
-      if (!TRANSIENT_MODAL_STATUSES.has(response.status) || retryDelay === 3_000) {
+      try {
+        response = await fetch(`${MODAL_API_BASE_URL}/chat/completions`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${modalToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            model: modalModelId,
+            messages: [{ role: "system", content: portfolioContext }, ...messages],
+            max_tokens: 280,
+            temperature: 0.2,
+          }),
+          signal: AbortSignal.timeout(Math.min(12_000, remainingTime)),
+          cache: "no-store",
+        });
+      } catch (error) {
+        lastRequestError = error;
+        if (attempt < COLD_START_RETRY_DELAYS.length - 1) {
+          continue;
+        }
+        throw error;
+      }
+
+      if (!TRANSIENT_MODAL_STATUSES.has(response.status) || attempt === COLD_START_RETRY_DELAYS.length - 1) {
         break;
       }
     }
 
     if (!response) {
-      throw new Error("Modal did not return a response.");
+      throw lastRequestError ?? new Error("Modal did not return a response.");
     }
 
     if (!response.ok) {
       console.error("Modal chat request failed", { status: response.status });
+      const message = TRANSIENT_MODAL_STATUSES.has(response.status)
+        ? "The AI assistant is starting up. This can take up to a minute on its first request—please try again shortly."
+        : "The portfolio assistant is temporarily unavailable. Please try again shortly.";
       return NextResponse.json(
-        { error: "The portfolio assistant is temporarily unavailable. Please try again shortly." },
+        { error: message },
         { status: 503, headers: { "Cache-Control": "no-store" } },
       );
     }
