@@ -5,6 +5,7 @@ export const maxDuration = 60;
 const MODAL_API_BASE_URL = process.env.MODAL_API_BASE_URL ?? "https://inference.us-west.modal.direct/v1";
 const MAX_MESSAGES = 6;
 const MAX_MESSAGE_LENGTH = 700;
+const TRANSIENT_MODAL_STATUSES = new Set([429, 502, 503, 504]);
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -80,21 +81,37 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await fetch(`${MODAL_API_BASE_URL}/chat/completions`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${modalToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: modalModelId,
-        messages: [{ role: "system", content: portfolioContext }, ...messages],
-        max_tokens: 280,
-        temperature: 0.2,
-      }),
-      signal: AbortSignal.timeout(55_000),
-      cache: "no-store",
-    });
+    let response: Response | undefined;
+
+    for (const retryDelay of [0, 1_500, 3_000]) {
+      if (retryDelay) {
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      }
+
+      response = await fetch(`${MODAL_API_BASE_URL}/chat/completions`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${modalToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: modalModelId,
+          messages: [{ role: "system", content: portfolioContext }, ...messages],
+          max_tokens: 280,
+          temperature: 0.2,
+        }),
+        signal: AbortSignal.timeout(45_000),
+        cache: "no-store",
+      });
+
+      if (!TRANSIENT_MODAL_STATUSES.has(response.status) || retryDelay === 3_000) {
+        break;
+      }
+    }
+
+    if (!response) {
+      throw new Error("Modal did not return a response.");
+    }
 
     if (!response.ok) {
       console.error("Modal chat request failed", { status: response.status });
