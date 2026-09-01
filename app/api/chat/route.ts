@@ -105,9 +105,10 @@ export async function POST(request: Request) {
     }
 
     const payload = await response.json() as {
-      choices?: Array<{ message?: { content?: string } }>;
+      choices?: Array<{ message?: { content?: string; reasoning_content?: string } }>;
     };
-    const reply = payload.choices?.[0]?.message?.content?.trim();
+    const message = payload.choices?.[0]?.message;
+    const reply = message?.content?.trim() || message?.reasoning_content?.trim();
 
     if (!reply) {
       return NextResponse.json(
