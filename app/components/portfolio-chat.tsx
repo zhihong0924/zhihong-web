@@ -24,6 +24,7 @@ export default function PortfolioChat() {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const requestControllerRef = useRef<AbortController | null>(null);
   const hasStartedStreamingReply = messages.at(-1)?.role === "assistant" && Boolean(messages.at(-1)?.content.trim());
   const waitingPhrases = isWarmingUp ? warmingPhrases : thinkingPhrases;
   const waitingPhrase = waitingPhrases[waitingPhraseIndex % waitingPhrases.length];
@@ -107,9 +108,11 @@ export default function PortfolioChat() {
     setIsWarmingUp(false);
     setWaitingPhraseIndex(0);
     const warmupTimer = window.setTimeout(() => setIsWarmingUp(true), 3_000);
+    const requestController = new AbortController();
+    requestControllerRef.current = requestController;
 
     try {
-      const response = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: nextMessages.slice(-6) }) });
+      const response = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: nextMessages.slice(-6) }), signal: requestController.signal });
       if (!response.ok) {
         const payload = await response.json() as { error?: string };
         throw new Error(payload.error ?? "The portfolio assistant is unavailable.");
@@ -128,9 +131,12 @@ export default function PortfolioChat() {
       setMessages((currentMessages) => currentMessages.filter((currentMessage, index) => (
         index !== currentMessages.length - 1 || currentMessage.content.trim()
       )));
-      setError(caughtError instanceof Error ? caughtError.message : "The portfolio assistant is unavailable.");
+      if (!(caughtError instanceof DOMException && caughtError.name === "AbortError")) {
+        setError(caughtError instanceof Error ? caughtError.message : "The portfolio assistant is unavailable.");
+      }
     } finally {
       window.clearTimeout(warmupTimer);
+      if (requestControllerRef.current === requestController) requestControllerRef.current = null;
       setIsSending(false);
       setIsWarmingUp(false);
       inputRef.current?.focus();
@@ -147,6 +153,10 @@ export default function PortfolioChat() {
 
     event.preventDefault();
     void sendMessage(input);
+  }
+
+  function stopResponse() {
+    requestControllerRef.current?.abort();
   }
 
   return (
@@ -169,7 +179,7 @@ export default function PortfolioChat() {
         <form className="portfolio-chat-form" onSubmit={handleSubmit}>
           <label className="sr-only" htmlFor="portfolio-chat-input">Ask a question about Zhihong</label>
           <textarea ref={inputRef} id="portfolio-chat-input" value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={handleInputKeyDown} maxLength={700} placeholder="Ask a question about my work…" rows={2} disabled={isSending} />
-          <button type="submit" disabled={!input.trim() || isSending} aria-label="Send question"><span aria-hidden="true">↑</span></button>
+          <button className={isSending ? "is-stop-button" : undefined} type={isSending ? "button" : "submit"} onClick={isSending ? stopResponse : undefined} disabled={!isSending && !input.trim()} aria-label={isSending ? "Stop response" : "Send question"}><span aria-hidden="true">{isSending ? "■" : "↑"}</span></button>
         </form>
         <p className="portfolio-chat-disclaimer">Answers use the public portfolio only. No conversations are stored.</p>
       </div>

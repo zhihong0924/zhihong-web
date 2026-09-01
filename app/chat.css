@@ -30,7 +30,9 @@ main .portfolio-chat .portfolio-chat-form { align-items:end; gap:.75rem; margin:
 main .portfolio-chat .portfolio-chat-form textarea { min-width:0; flex:1; resize:vertical; border:1px solid #bfc7d9; border-radius:.7rem; outline:0; background:#fff; color:var(--ink); font:inherit; font-size:.88rem; line-height:1.45; padding:.75rem .85rem; }
 main .portfolio-chat .portfolio-chat-form textarea::placeholder { color:#6d7485; }
 main .portfolio-chat .portfolio-chat-form textarea:focus { border-color:#6577ff; box-shadow:0 0 0 3px rgba(67,92,255,.16); }
+main .portfolio-chat .portfolio-chat-form textarea:disabled { background:#f3f4f7; color:#727887; cursor:not-allowed; }
 main .portfolio-chat .portfolio-chat-form button { display:grid; width:2.8rem; height:2.8rem; flex:0 0 auto; place-items:center; border-radius:.7rem; font-size:1.2rem; padding:0; }
+main .portfolio-chat .portfolio-chat-form button.is-stop-button { background:#222b4e; color:#fff; }
 main .portfolio-chat .portfolio-chat-disclaimer { padding:0 1.5rem 1.2rem; }
 
 main .portfolio-chat.is-conversation-active {
