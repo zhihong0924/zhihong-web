@@ -33,19 +33,43 @@ main .portfolio-chat .portfolio-chat-disclaimer { padding:0 1.5rem 1.2rem; }
 
 main .portfolio-chat.is-conversation-active {
   display:block;
-  min-height:calc(100svh - 2rem);
-  padding:clamp(2rem, 5vw, 4rem) max(4vw, calc((100vw - 72rem) / 2));
+  min-height:42rem;
+  padding:0;
+  background:#101323;
 }
 main .portfolio-chat.is-conversation-active .portfolio-chat-shell {
-  width:min(100%, 64rem);
+  width:100%;
+  min-height:42rem;
   height:min(50rem, calc(100svh - 4rem));
-  min-height:36rem;
-  margin-inline:auto;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
 }
-main .portfolio-chat.is-conversation-active .portfolio-chat-messages { min-height:0; padding:clamp(1.5rem, 3vw, 2.5rem); }
+main .portfolio-chat.is-conversation-active .portfolio-chat-topline {
+  padding-inline:max(1.5rem, calc((100% - 64rem) / 2));
+}
+main .portfolio-chat.is-conversation-active .portfolio-chat-messages {
+  width:min(100%, 64rem);
+  align-self:center;
+  min-height:0;
+  padding:clamp(2rem, 5vw, 4rem) 1.5rem;
+}
 main .portfolio-chat.is-conversation-active .portfolio-chat-message { max-width:min(80%, 46rem); font-size:1rem; }
-main .portfolio-chat.is-conversation-active .portfolio-chat-form { margin:0 clamp(1.5rem, 3vw, 2.5rem); }
-main .portfolio-chat.is-conversation-active .portfolio-chat-disclaimer { padding:0 clamp(1.5rem, 3vw, 2.5rem) 1.2rem; }
+main .portfolio-chat.is-conversation-active .portfolio-chat-form {
+  width:min(calc(100% - 3rem), 64rem);
+  align-self:center;
+  margin:0 auto;
+}
+main .portfolio-chat.is-conversation-active .portfolio-chat-error {
+  width:min(calc(100% - 3rem), 64rem);
+  align-self:center;
+  margin:0 auto .9rem;
+}
+main .portfolio-chat.is-conversation-active .portfolio-chat-disclaimer {
+  width:min(calc(100% - 3rem), 64rem);
+  align-self:center;
+  padding:0 0 1.2rem;
+}
 
 @media (max-width:700px) {
   main .portfolio-chat { display:block; padding:4.5rem 1.25rem; }
@@ -58,7 +82,10 @@ main .portfolio-chat.is-conversation-active .portfolio-chat-disclaimer { padding
   main .portfolio-chat .portfolio-chat-suggestions { padding:0 1rem 1rem; }
   main .portfolio-chat .portfolio-chat-form { margin:0 1rem; }
   main .portfolio-chat .portfolio-chat-disclaimer { padding:0 1rem 1rem; }
-  main .portfolio-chat.is-conversation-active { min-height:100svh; padding:0; }
-  main .portfolio-chat.is-conversation-active .portfolio-chat-shell { width:100%; height:100svh; min-height:100svh; border-radius:0; border-inline:0; }
+  main .portfolio-chat.is-conversation-active .portfolio-chat-topline { padding-inline:1rem; }
+  main .portfolio-chat.is-conversation-active .portfolio-chat-messages { width:100%; padding:1.5rem 1rem; }
+  main .portfolio-chat.is-conversation-active .portfolio-chat-form,
+  main .portfolio-chat.is-conversation-active .portfolio-chat-error,
+  main .portfolio-chat.is-conversation-active .portfolio-chat-disclaimer { width:calc(100% - 2rem); }
   main .portfolio-chat.is-conversation-active .portfolio-chat-message { max-width:92%; }
 }
