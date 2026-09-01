@@ -9,6 +9,8 @@ const MAX_MESSAGE_LENGTH = 700;
 const TRANSIENT_MODAL_STATUSES = new Set([429, 502, 503, 504]);
 const COLD_START_RETRY_DELAYS = [0, 2_000, 4_000, 8_000, 12_000, 16_000];
 const CHAT_REQUEST_WINDOW_MS = 52_000;
+const CPU_CHAT_REQUEST_WINDOW_MS = 58_000;
+const CPU_CHAT_REQUEST_TIMEOUT_MS = 55_000;
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -86,9 +88,13 @@ export async function POST(request: Request) {
   try {
     let response: Response | undefined;
     let lastRequestError: unknown;
-    const deadline = Date.now() + CHAT_REQUEST_WINDOW_MS;
+    const usesCpuChat = Boolean(MODAL_CPU_CHAT_URL);
+    // CPU inference normally completes in tens of seconds. A short 12-second
+    // upstream timeout would abort a healthy request, then start duplicates.
+    const retryDelays = usesCpuChat ? [0] : COLD_START_RETRY_DELAYS;
+    const deadline = Date.now() + (usesCpuChat ? CPU_CHAT_REQUEST_WINDOW_MS : CHAT_REQUEST_WINDOW_MS);
 
-    for (const [attempt, retryDelay] of COLD_START_RETRY_DELAYS.entries()) {
+    for (const [attempt, retryDelay] of retryDelays.entries()) {
       if (retryDelay) {
         await new Promise((resolve) => setTimeout(resolve, retryDelay));
       }
@@ -100,7 +106,7 @@ export async function POST(request: Request) {
 
       try {
         const endpointUrl = MODAL_CPU_CHAT_URL ?? `${MODAL_API_BASE_URL}/chat/completions`;
-        const requestBody = MODAL_CPU_CHAT_URL
+        const requestBody = usesCpuChat
           ? {
               messages: [{ role: "system", content: portfolioContext }, ...messages],
               max_tokens: 220,
@@ -119,18 +125,20 @@ export async function POST(request: Request) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(requestBody),
-          signal: AbortSignal.timeout(Math.min(12_000, remainingTime)),
+          signal: AbortSignal.timeout(
+            usesCpuChat ? Math.min(CPU_CHAT_REQUEST_TIMEOUT_MS, remainingTime) : Math.min(12_000, remainingTime),
+          ),
           cache: "no-store",
         });
       } catch (error) {
         lastRequestError = error;
-        if (attempt < COLD_START_RETRY_DELAYS.length - 1) {
+        if (attempt < retryDelays.length - 1) {
           continue;
         }
         throw error;
       }
 
-      if (!TRANSIENT_MODAL_STATUSES.has(response.status) || attempt === COLD_START_RETRY_DELAYS.length - 1) {
+      if (!TRANSIENT_MODAL_STATUSES.has(response.status) || attempt === retryDelays.length - 1) {
         break;
       }
     }

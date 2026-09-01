@@ -26,7 +26,7 @@ The chat is a primary, in-page experience immediately after the hero rather than
 - If the information is not present, answer that it is not included in the published portfolio rather than guessing.
 - Do not expose private, personal, credential, employer-confidential, or visitor-provided sensitive information.
 - Keep requests small: at most six short conversation messages; limit model output to 280 tokens.
-- The route retries temporary Modal warm-up failures for up to roughly one minute. While it waits, the interface tells the visitor that the AI assistant is starting; if it remains unavailable, it gives a specific warm-up message instead of a generic error.
+- The managed GPU Endpoint retries temporary warm-up failures for up to roughly one minute. The CPU experiment instead permits one request to run for up to 55 seconds, because its normal CPU generation time can exceed the GPU backend's short per-attempt timeout. This avoids aborting healthy CPU inference and creating duplicate generations.
 - Do not store conversations or add a database for the initial release.
 - Keep the chat unavailable until `MODAL_PROXY_TOKEN` and either the managed Endpoint variables or `MODAL_CPU_CHAT_URL` are configured.
 - Before enabling production chat, add a Vercel WAF rate-limit rule for `POST /api/chat`. A client-side cooldown is only a usability aid, not abuse protection.

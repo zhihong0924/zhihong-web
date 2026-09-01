@@ -67,7 +67,7 @@ export default function PortfolioChat() {
         <div className="portfolio-chat-topline"><span>ASK ZHIHONG</span><span>Public portfolio knowledge</span></div>
         <div className="portfolio-chat-messages" ref={messagesRef} aria-live="polite">
           {messages.map((message, index) => <p className={`portfolio-chat-message ${message.role}`} key={`${message.role}-${index}`}>{message.content}</p>)}
-          {isSending && <p className="portfolio-chat-message assistant loading">{isWarmingUp ? "Starting the AI assistant — this can take up to a minute on its first request." : "Thinking…"}</p>}
+          {isSending && <p className="portfolio-chat-message assistant loading">{isWarmingUp ? "The assistant is preparing an answer — this can take up to a minute." : "Thinking…"}</p>}
         </div>
         {messages.length === 1 && <div className="portfolio-chat-suggestions" aria-label="Suggested questions">
           {suggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => void sendMessage(suggestion)} disabled={isSending}>{suggestion} <span aria-hidden="true">↗</span></button>)}
