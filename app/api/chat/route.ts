@@ -13,7 +13,6 @@ const CHAT_REQUEST_WINDOW_MS = 52_000;
 const CPU_CHAT_REQUEST_WINDOW_MS = 58_000;
 const CPU_CHAT_REQUEST_TIMEOUT_MS = 55_000;
 const OUT_OF_SCOPE_REPLY = "I can help with questions about Zhihong’s work, projects, and engineering background.";
-const PORTFOLIO_TOPIC_PATTERN = /\b(zhihong|chong|tzh|sports\s+centre|portfolio|work|project|experience|background|career|role|skills|engineering|engineer|automation|ai\s+agents?|intel|keysight|cadence(?:connect)?|invention|awards?|recognition|schematic|testbench|migration|battery|emulation|codex|copilot|linkedin|contact|email|phone)\b/i;
 const INJECTION_PATTERN = /\b(ignore|disregard|override|reveal|repeat|show)\b.{0,80}\b(instruction|system\s+prompt|prompt|rule|message)\b|\b(jailbreak|roleplay|pretend\s+to\s+be)\b/i;
 
 type ChatMessage = {
@@ -55,8 +54,8 @@ function parseMessages(value: unknown): ChatMessage[] | null {
   return messages.at(-1)?.role === "user" ? messages : null;
 }
 
-function isPortfolioQuestion(message: string) {
-  return !INJECTION_PATTERN.test(message) && PORTFOLIO_TOPIC_PATTERN.test(message);
+function isSafeQuestion(message: string) {
+  return !INJECTION_PATTERN.test(message);
 }
 
 export async function POST(request: Request) {
@@ -82,12 +81,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Please send a short chat message." }, { status: 400 });
   }
 
-  if (!isPortfolioQuestion(messages.at(-1)?.content ?? "")) {
+  const latestQuestion = messages.at(-1)?.content ?? "";
+  if (!isSafeQuestion(latestQuestion)) {
     return NextResponse.json({ reply: OUT_OF_SCOPE_REPLY }, { headers: { "Cache-Control": "no-store" } });
   }
 
   try {
-    const portfolioContext = `${portfolioInstructions}\n\nRetrieved portfolio knowledge:\n${await getRelevantPortfolioContext(messages.at(-1)?.content ?? "")}`;
+    const retrievedContext = await getRelevantPortfolioContext(latestQuestion);
+    if (!retrievedContext) {
+      return NextResponse.json({ reply: OUT_OF_SCOPE_REPLY }, { headers: { "Cache-Control": "no-store" } });
+    }
+
+    const portfolioContext = `${portfolioInstructions}\n\nRetrieved portfolio knowledge:\n${retrievedContext}`;
     let response: Response | undefined;
     let lastRequestError: unknown;
     const usesCpuChat = Boolean(MODAL_CPU_CHAT_URL);

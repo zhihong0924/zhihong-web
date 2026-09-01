@@ -12,7 +12,7 @@ Browser chat panel -> POST /api/chat -> Modal model backend
 
 The browser only calls the same-origin Next.js route. The route retrieves the `MODAL_PROXY_TOKEN` from Vercel environment variables. The Modal token is never sent to the browser or committed to the repository. Model responses are passed through as server-sent events (SSE), allowing the browser to render each generated chunk rather than wait for a completed answer.
 
-Published portfolio knowledge lives in `content/portfolio-context.md`. The route splits this Markdown into sections and selects the three highest-scoring sections for the visitor’s latest question before sending context to Modal. This is a lightweight lexical RAG layer: it requires no database, embeddings, or extra service, and keeps the prompt focused as the Markdown grows. `next.config.ts` explicitly traces the Markdown file so it is included in deployed route bundles.
+Published portfolio knowledge lives in `content/portfolio-context.md`. The route splits this Markdown into sections and selects the three highest-scoring sections for the visitor’s latest question before sending context to Modal. A question must meet the retrieval relevance threshold (a matching heading or multiple matching content terms); otherwise, it is declined without calling Modal. Explicit general-profile questions, such as “Tell me about Zhihong,” retrieve the Profile section. This lightweight lexical RAG layer requires no database, embeddings, or extra service, and keeps the prompt focused as the Markdown grows. `next.config.ts` explicitly traces the Markdown file so it is included in deployed route bundles.
 
 The default backend is a Modal managed Endpoint. Its OpenAI-compatible API is called using the endpoint URL shown in the Modal dashboard and the base Qwen repository ID supplied as environment variables.
 
@@ -24,7 +24,7 @@ The chat is a primary, in-page experience immediately after the hero rather than
 
 ## Boundaries and safety
 
-- Reject requests outside Zhihong's published professional profile, projects, experience, recognition, or public contact options before calling Modal. This deterministic topic gate also rejects prompt-injection-shaped requests; the model receives only in-scope questions.
+- Reject prompt-injection-shaped requests before calling Modal. For other requests, retrieval itself is the scope gate: only questions with sufficient matches in Zhihong’s published knowledge are sent to the model.
 - Answer only using retrieved, public sections from `content/portfolio-context.md`.
 - If the information is not present, answer that it is not included in the published portfolio rather than guessing.
 - Do not expose private, personal, credential, employer-confidential, or visitor-provided sensitive information.
