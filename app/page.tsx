@@ -32,10 +32,12 @@ export default function Home() {
           <p className="eyebrow light">CHONG ZHI HONG · SOFTWARE ENGINEER</p>
           <h1 id="hero-title">Engineering better<br />{" "}ways to build.</h1>
           <p className="hero-intro">I&apos;m Zhihong, a software engineer building automation and AI-powered tools that help engineering teams do their best work.</p>
-          <a className="button button-light" href="#about">Explore my work <span aria-hidden="true">↓</span></a>
+          <a className="button button-light" href="#ask-zhihong">Ask Zhihong <span aria-hidden="true">↓</span></a>
         </div>
         <p className="hero-caption">Automation, engineering systems, and practical AI agents.</p>
       </section>
+
+      <PortfolioChat />
 
       <section className="about section" id="about" aria-labelledby="about-title">
         <p className="eyebrow">ABOUT</p>
@@ -83,7 +85,6 @@ export default function Home() {
 
       <section className="contact" id="contact" aria-labelledby="contact-title"><p className="eyebrow light">GET IN TOUCH</p><h2 id="contact-title">Let&apos;s make<br />{" "}<em>something useful.</em></h2><a className="button button-light" href="mailto:zhihong0924@gmail.com">zhihong0924@gmail.com <span aria-hidden="true">↗</span></a><div className="contact-links" aria-label="Other ways to get in touch"><a href="https://www.linkedin.com/in/zhi-hong-chong/" target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a href="tel:+60134044212">+60 13-404 4212 <span aria-hidden="true">↗</span></a></div><p className="contact-note">Available for thoughtful engineering and automation conversations.</p></section>
       <footer><span>© 2026 Chong Zhi Hong</span><a href="#top">Back to top ↑</a></footer>
-      <PortfolioChat />
     </main>
   );
 }

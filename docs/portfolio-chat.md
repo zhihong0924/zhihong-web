@@ -14,6 +14,10 @@ The browser only calls the same-origin Next.js route. The route owns the curated
 
 Modal hosts the selected Qwen model through a managed Endpoint. Its OpenAI-compatible API is called using the endpoint URL shown in the Modal dashboard and the base Qwen repository ID supplied as environment variables.
 
+## Presentation
+
+The chat is a primary, in-page experience immediately after the hero rather than a floating support widget. It opens with curated questions and a large prompt, then expands into the conversation in place. This makes the assistant discoverable without obscuring the portfolio content or making the chat itself the entire home page.
+
 ## Boundaries and safety
 
 - Answer only using the curated, public portfolio context in `app/api/chat/route.ts`.
