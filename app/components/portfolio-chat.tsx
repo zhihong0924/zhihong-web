@@ -32,13 +32,54 @@ export default function PortfolioChat() {
     }
   }, [hasStartedConversation]);
 
+  async function readStreamedReply(response: Response) {
+    if (!response.body) throw new Error("The portfolio assistant could not start streaming a response.");
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let bufferedEvents = "";
+    let reply = "";
+
+    const appendDelta = (delta: string) => {
+      reply += delta;
+      setMessages((currentMessages) => currentMessages.map((message, index) => (
+        index === currentMessages.length - 1 ? { ...message, content: reply } : message
+      )));
+    };
+
+    while (true) {
+      const { done, value } = await reader.read();
+      bufferedEvents += decoder.decode(value, { stream: !done });
+
+      const events = bufferedEvents.split("\n\n");
+      bufferedEvents = events.pop() ?? "";
+
+      for (const event of events) {
+        const data = event.split("\n").find((line) => line.startsWith("data:"))?.slice(5).trim();
+        if (!data || data === "[DONE]") continue;
+
+        try {
+          const payload = JSON.parse(data) as { delta?: string; choices?: Array<{ delta?: { content?: string } }> };
+          const delta = payload.delta ?? payload.choices?.[0]?.delta?.content;
+          if (delta) appendDelta(delta);
+        } catch {
+          // Ignore a malformed upstream event and continue reading later chunks.
+        }
+      }
+
+      if (done) break;
+    }
+
+    if (!reply.trim()) throw new Error("The portfolio assistant could not prepare a response. Please try again.");
+  }
+
   async function sendMessage(content: string) {
     const message = content.trim();
     if (!message || isSending) return;
 
     const nextMessages = [...messages, { role: "user" as const, content: message }];
     setHasStartedConversation(true);
-    setMessages(nextMessages);
+    setMessages([...nextMessages, { role: "assistant", content: "" }]);
     setInput("");
     setError(null);
     setIsSending(true);
@@ -47,10 +88,24 @@ export default function PortfolioChat() {
 
     try {
       const response = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: nextMessages.slice(-6) }) });
-      const payload = await response.json() as { reply?: string; error?: string };
-      if (!response.ok || !payload.reply) throw new Error(payload.error ?? "The portfolio assistant is unavailable.");
-      setMessages((currentMessages) => [...currentMessages, { role: "assistant", content: payload.reply as string }]);
+      if (!response.ok) {
+        const payload = await response.json() as { error?: string };
+        throw new Error(payload.error ?? "The portfolio assistant is unavailable.");
+      }
+
+      if (response.headers.get("content-type")?.includes("text/event-stream")) {
+        await readStreamedReply(response);
+      } else {
+        const payload = await response.json() as { reply?: string; error?: string };
+        if (!payload.reply) throw new Error(payload.error ?? "The portfolio assistant is unavailable.");
+        setMessages((currentMessages) => currentMessages.map((currentMessage, index) => (
+          index === currentMessages.length - 1 ? { ...currentMessage, content: payload.reply as string } : currentMessage
+        )));
+      }
     } catch (caughtError) {
+      setMessages((currentMessages) => currentMessages.filter((currentMessage, index) => (
+        index !== currentMessages.length - 1 || currentMessage.content.trim()
+      )));
       setError(caughtError instanceof Error ? caughtError.message : "The portfolio assistant is unavailable.");
     } finally {
       window.clearTimeout(warmupTimer);

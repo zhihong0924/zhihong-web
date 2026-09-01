@@ -110,12 +110,14 @@ export async function POST(request: Request) {
           ? {
               messages: [{ role: "system", content: portfolioContext }, ...messages],
               max_tokens: 220,
+              stream: true,
             }
           : {
               model: modalModelId,
               messages: [{ role: "system", content: portfolioContext }, ...messages],
               max_tokens: 280,
               temperature: 0.2,
+              stream: true,
             };
 
         response = await fetch(endpointUrl, {
@@ -156,6 +158,15 @@ export async function POST(request: Request) {
         { error: message },
         { status: 503, headers: { "Cache-Control": "no-store" } },
       );
+    }
+
+    if (response.headers.get("content-type")?.includes("text/event-stream") && response.body) {
+      return new Response(response.body, {
+        headers: {
+          "Cache-Control": "no-store",
+          "Content-Type": "text/event-stream; charset=utf-8",
+        },
+      });
     }
 
     const payload = await response.json() as {

@@ -10,7 +10,7 @@ The portfolio can offer a small, optional chat panel for visitors to ask public,
 Browser chat panel -> POST /api/chat -> Modal model backend
 ```
 
-The browser only calls the same-origin Next.js route. The route owns the curated professional context and retrieves the `MODAL_PROXY_TOKEN` from Vercel environment variables. The Modal token is never sent to the browser or committed to the repository.
+The browser only calls the same-origin Next.js route. The route owns the curated professional context and retrieves the `MODAL_PROXY_TOKEN` from Vercel environment variables. The Modal token is never sent to the browser or committed to the repository. Model responses are passed through as server-sent events (SSE), allowing the browser to render each generated chunk rather than wait for a completed answer.
 
 The default backend is a Modal managed Endpoint. Its OpenAI-compatible API is called using the endpoint URL shown in the Modal dashboard and the base Qwen repository ID supplied as environment variables.
 
@@ -95,7 +95,7 @@ The managed Endpoint currently does not expose a CPU-only setting. To test a CPU
 
    Leave the existing `MODAL_API_BASE_URL` and `MODAL_MODEL_ID` values in place. They are ignored while `MODAL_CPU_CHAT_URL` exists, making rollback a one-variable change.
 
-3. Test a short factual question. The CPU container scales to zero when unused and remains warm for five minutes after a request. Watch startup time, response time, and CPU/memory cost in the Modal dashboard before deciding whether to keep it.
+3. Test a short factual question. A warm container streams generated response chunks to the browser as soon as inference begins; a cold start still waits for the model to load before its first chunk. The CPU container scales to zero when unused and remains warm for five minutes after a request. Watch startup time, response time, and CPU/memory cost in the Modal dashboard before deciding whether to keep it.
 
 ## Future work
 

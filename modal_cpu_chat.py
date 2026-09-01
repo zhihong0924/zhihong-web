@@ -8,7 +8,9 @@ authentication. Store it in Vercel as MODAL_CPU_CHAT_URL, together with the
 existing MODAL_PROXY_TOKEN. Do not expose that token to the browser.
 """
 
+import json
 import re
+from threading import Thread
 
 import modal
 from pydantic import BaseModel, Field
@@ -50,6 +52,7 @@ class ChatMessage(BaseModel):
 class ChatRequest(BaseModel):
     messages: list[ChatMessage] = Field(min_length=1, max_length=7)
     max_tokens: int = Field(default=220, ge=1, le=280)
+    stream: bool = False
 
 
 @app.cls(
@@ -88,20 +91,42 @@ class PortfolioCpuChat:
         label="zhihong-portfolio-cpu-chat",
         requires_proxy_auth=True,
     )
-    def chat(self, request: ChatRequest) -> dict[str, str]:
+    def chat(self, request: ChatRequest):
+        from fastapi.responses import StreamingResponse
         import torch
+        from transformers import TextIteratorStreamer
 
         messages = [{"role": message.role, "content": message.content} for message in request.messages]
         prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
         encoded = self.tokenizer(prompt, return_tensors="pt")
 
-        with torch.inference_mode():
-            generated = self.model.generate(
-                **encoded,
-                do_sample=False,
-                max_new_tokens=request.max_tokens,
-                pad_token_id=self.tokenizer.eos_token_id,
+        generation_options = {
+            **encoded,
+            "do_sample": False,
+            "max_new_tokens": request.max_tokens,
+            "pad_token_id": self.tokenizer.eos_token_id,
+        }
+
+        if request.stream:
+            def stream_reply():
+                streamer = TextIteratorStreamer(self.tokenizer, skip_prompt=True, skip_special_tokens=True)
+                generation_thread = Thread(target=self.model.generate, kwargs={**generation_options, "streamer": streamer})
+                generation_thread.start()
+
+                for chunk in streamer:
+                    yield f"data: {json.dumps({'delta': chunk})}\n\n"
+
+                generation_thread.join()
+                yield "data: [DONE]\n\n"
+
+            return StreamingResponse(
+                stream_reply(),
+                media_type="text/event-stream",
+                headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
             )
+
+        with torch.inference_mode():
+            generated = self.model.generate(**generation_options)
 
         reply_tokens = generated[0][encoded.input_ids.shape[1] :]
         reply = self.tokenizer.decode(reply_tokens, skip_special_tokens=True).strip()
