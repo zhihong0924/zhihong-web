@@ -12,7 +12,7 @@ Browser chat panel -> POST /api/chat -> Modal shared LLM endpoint
 
 The browser only calls the same-origin Next.js route. The route owns the curated professional context and retrieves the `MODAL_PROXY_TOKEN` from Vercel environment variables. The Modal token is never sent to the browser or committed to the repository.
 
-Modal hosts the selected Qwen model through a managed Shared Endpoint. Its OpenAI-compatible API is called through Modal's regional shared base URL. The endpoint's name, shown by `modal endpoint list`, becomes the model hostname supplied as an environment variable.
+Modal hosts the selected Qwen model through a managed Endpoint. Its OpenAI-compatible API is called using the endpoint URL shown in the Modal dashboard and the base Qwen repository ID supplied as environment variables.
 
 ## Boundaries and safety
 
@@ -33,7 +33,7 @@ Modal hosts the selected Qwen model through a managed Shared Endpoint. Its OpenA
    modal endpoint create --model Qwen/Qwen3.5-0.8B
    ```
 
-   Wait for the endpoint status to become `live`. The endpoint name printed by `modal endpoint list --json` is needed in step 5.
+   Wait for the endpoint status to become `live`. Open the dashboard link from the create command and copy its **Endpoint URL** (without a trailing slash).
 
 3. Create a restricted proxy token that can access the endpoint:
 
@@ -46,21 +46,19 @@ Modal hosts the selected Qwen model through a managed Shared Endpoint. Its OpenA
 4. Test the endpoint locally before connecting the website:
 
    ```bash
-   curl "https://inference.us-west.modal.direct/v1/chat/completions" \
+   curl "<ENDPOINT_URL>/v1/chat/completions" \
      -H "Authorization: Bearer wk-...ws-..." \
      -H "Content-Type: application/json" \
-     -d '{"model":"<endpoint-name>.us-west.modal.direct","messages":[{"role":"user","content":"Say hello in five words."}]}'
+     -d '{"model":"Qwen/Qwen3.5-0.8B","messages":[{"role":"user","content":"Say hello in five words."}]}'
    ```
 
 5. In Vercel, add these production and preview environment variables:
 
    ```text
    MODAL_PROXY_TOKEN=wk-...ws-...
-   MODAL_API_BASE_URL=https://inference.us-west.modal.direct/v1
-   MODAL_MODEL_ID=<endpoint-name>.us-west.modal.direct
+   MODAL_API_BASE_URL=<ENDPOINT_URL>/v1
+   MODAL_MODEL_ID=Qwen/Qwen3.5-0.8B
    ```
-
-   If you selected another routing region when creating the endpoint, replace `us-west` in both values with that region.
 
 6. Add a rate-limit WAF rule before enabling the feature for public traffic. Start conservatively (for example, a few requests per minute per IP) and revise it after observing real usage.
 7. Redeploy the site, then test short, factual questions such as “What projects has Zhihong built?” and an out-of-scope question that should be declined.
