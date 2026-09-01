@@ -24,11 +24,16 @@ app = modal.App(APP_NAME)
 model_cache = modal.Volume.from_name("zhihong-portfolio-model-cache", create_if_missing=True)
 image = (
     modal.Image.debian_slim(python_version="3.11")
+    # The standard PyPI build includes large CUDA libraries. This explicit
+    # wheel keeps the image and startup path CPU-only.
+    .uv_pip_install(
+        "torch==2.6.0+cpu",
+        index_url="https://download.pytorch.org/whl/cpu",
+    )
     .uv_pip_install(
         "fastapi[standard]",
         "huggingface_hub>=0.34",
         "safetensors>=0.5",
-        "torch>=2.6",
         "transformers>=4.57",
     )
     .env({"HF_HOME": MODEL_CACHE_PATH, "HF_HUB_CACHE": MODEL_CACHE_PATH})
@@ -67,7 +72,7 @@ class PortfolioCpuChat:
         self.model = AutoModelForCausalLM.from_pretrained(
             MODEL_ID,
             cache_dir=MODEL_CACHE_PATH,
-            torch_dtype=torch.float32,
+            dtype=torch.float32,
         )
         self.model.to("cpu")
         self.model.eval()
