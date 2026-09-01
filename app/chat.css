@@ -31,6 +31,22 @@ main .portfolio-chat .portfolio-chat-form textarea:focus { border-color:#aebdff;
 main .portfolio-chat .portfolio-chat-form button { display:grid; width:2.8rem; height:2.8rem; flex:0 0 auto; place-items:center; border-radius:.7rem; font-size:1.2rem; padding:0; }
 main .portfolio-chat .portfolio-chat-disclaimer { padding:0 1.5rem 1.2rem; }
 
+main .portfolio-chat.is-conversation-active {
+  display:block;
+  min-height:calc(100svh - 2rem);
+  padding:clamp(2rem, 5vw, 4rem) max(4vw, calc((100vw - 72rem) / 2));
+}
+main .portfolio-chat.is-conversation-active .portfolio-chat-shell {
+  width:min(100%, 64rem);
+  height:min(50rem, calc(100svh - 4rem));
+  min-height:36rem;
+  margin-inline:auto;
+}
+main .portfolio-chat.is-conversation-active .portfolio-chat-messages { min-height:0; padding:clamp(1.5rem, 3vw, 2.5rem); }
+main .portfolio-chat.is-conversation-active .portfolio-chat-message { max-width:min(80%, 46rem); font-size:1rem; }
+main .portfolio-chat.is-conversation-active .portfolio-chat-form { margin:0 clamp(1.5rem, 3vw, 2.5rem); }
+main .portfolio-chat.is-conversation-active .portfolio-chat-disclaimer { padding:0 clamp(1.5rem, 3vw, 2.5rem) 1.2rem; }
+
 @media (max-width:700px) {
   main .portfolio-chat { display:block; padding:4.5rem 1.25rem; }
   main .portfolio-chat-intro { margin-bottom:2.5rem; }
@@ -42,4 +58,7 @@ main .portfolio-chat .portfolio-chat-disclaimer { padding:0 1.5rem 1.2rem; }
   main .portfolio-chat .portfolio-chat-suggestions { padding:0 1rem 1rem; }
   main .portfolio-chat .portfolio-chat-form { margin:0 1rem; }
   main .portfolio-chat .portfolio-chat-disclaimer { padding:0 1rem 1rem; }
+  main .portfolio-chat.is-conversation-active { min-height:100svh; padding:0; }
+  main .portfolio-chat.is-conversation-active .portfolio-chat-shell { width:100%; height:100svh; min-height:100svh; border-radius:0; border-inline:0; }
+  main .portfolio-chat.is-conversation-active .portfolio-chat-message { max-width:92%; }
 }

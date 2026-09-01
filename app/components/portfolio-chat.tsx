@@ -16,19 +16,28 @@ export default function PortfolioChat() {
   const [messages, setMessages] = useState<Message[]>([openingMessage]);
   const [isSending, setIsSending] = useState(false);
   const [isWarmingUp, setIsWarmingUp] = useState(false);
+  const [hasStartedConversation, setHasStartedConversation] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     messagesRef.current?.scrollTo({ top: messagesRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, isSending]);
+
+  useEffect(() => {
+    if (hasStartedConversation) {
+      sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [hasStartedConversation]);
 
   async function sendMessage(content: string) {
     const message = content.trim();
     if (!message || isSending) return;
 
     const nextMessages = [...messages, { role: "user" as const, content: message }];
+    setHasStartedConversation(true);
     setMessages(nextMessages);
     setInput("");
     setError(null);
@@ -57,12 +66,12 @@ export default function PortfolioChat() {
   }
 
   return (
-    <section className="portfolio-chat" id="ask-zhihong" aria-labelledby="portfolio-chat-title">
-      <div className="portfolio-chat-intro">
+    <section ref={sectionRef} className={`portfolio-chat${hasStartedConversation ? " is-conversation-active" : ""}`} id="ask-zhihong" aria-labelledby={hasStartedConversation ? undefined : "portfolio-chat-title"} aria-label={hasStartedConversation ? "Portfolio assistant conversation" : undefined}>
+      {!hasStartedConversation && <div className="portfolio-chat-intro">
         <p className="eyebrow">PORTFOLIO ASSISTANT</p>
         <h2 id="portfolio-chat-title">Ask about the <em>work.</em></h2>
         <p>Use this chat as a quick guide to Zhihong&apos;s projects, engineering background, and practical approach to automation.</p>
-      </div>
+      </div>}
       <div className="portfolio-chat-shell">
         <div className="portfolio-chat-topline"><span>ASK ZHIHONG</span><span>Public portfolio knowledge</span></div>
         <div className="portfolio-chat-messages" ref={messagesRef} aria-live="polite">
