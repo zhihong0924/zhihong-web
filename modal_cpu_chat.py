@@ -42,7 +42,9 @@ image = (
 
 class ChatMessage(BaseModel):
     role: str
-    content: str = Field(min_length=1, max_length=1_200)
+    # The Next.js route bounds visitor messages at 700 characters, but it also
+    # adds a longer curated system profile to every request.
+    content: str = Field(min_length=1, max_length=4_000)
 
 
 class ChatRequest(BaseModel):
