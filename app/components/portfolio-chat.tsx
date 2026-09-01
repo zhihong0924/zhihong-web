@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -65,6 +65,13 @@ export default function PortfolioChat() {
     void sendMessage(input);
   }
 
+  function handleInputKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
+    if (event.key !== "Enter" || event.shiftKey || event.nativeEvent.isComposing) return;
+
+    event.preventDefault();
+    void sendMessage(input);
+  }
+
   return (
     <section ref={sectionRef} className={`portfolio-chat${hasStartedConversation ? " is-conversation-active" : ""}`} id="ask-zhihong" aria-labelledby={hasStartedConversation ? undefined : "portfolio-chat-title"} aria-label={hasStartedConversation ? "Portfolio assistant conversation" : undefined}>
       {!hasStartedConversation && <div className="portfolio-chat-intro">
@@ -84,7 +91,7 @@ export default function PortfolioChat() {
         {error && <p className="portfolio-chat-error" role="alert">{error}</p>}
         <form className="portfolio-chat-form" onSubmit={handleSubmit}>
           <label className="sr-only" htmlFor="portfolio-chat-input">Ask a question about Zhihong</label>
-          <textarea ref={inputRef} id="portfolio-chat-input" value={input} onChange={(event) => setInput(event.target.value)} maxLength={700} placeholder="Ask a question about my work…" rows={2} disabled={isSending} />
+          <textarea ref={inputRef} id="portfolio-chat-input" value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={handleInputKeyDown} maxLength={700} placeholder="Ask a question about my work…" rows={2} disabled={isSending} />
           <button type="submit" disabled={!input.trim() || isSending} aria-label="Send question"><span aria-hidden="true">↑</span></button>
         </form>
         <p className="portfolio-chat-disclaimer">Answers use the public portfolio only. No conversations are stored.</p>
