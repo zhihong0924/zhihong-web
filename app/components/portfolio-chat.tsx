@@ -77,7 +77,9 @@ export default function PortfolioChat() {
     const message = content.trim();
     if (!message || isSending) return;
 
-    const nextMessages = [...messages, { role: "user" as const, content: message }];
+    // The streaming placeholder starts empty. Keep it in the UI only; the API
+    // accepts a conversation of real messages and correctly rejects blanks.
+    const nextMessages = [...messages.filter((currentMessage) => currentMessage.content.trim()), { role: "user" as const, content: message }];
     setHasStartedConversation(true);
     setMessages([...nextMessages, { role: "assistant", content: "" }]);
     setInput("");
