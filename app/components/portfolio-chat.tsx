@@ -10,18 +10,23 @@ const openingMessage: Message = {
 };
 
 const suggestions = ["What has Zhihong built?", "Tell me about TZH Sports Centre", "What is his work in automation?"];
+const thinkingPhrases = ["Thinking…", "Connecting the dots…", "Steering through the details…", "Cooking up a concise answer…", "Reviewing the work…"];
+const warmingPhrases = ["Warming up the model…", "Getting the engine ready…", "Still warming up — this can take a minute…"];
 
 export default function PortfolioChat() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([openingMessage]);
   const [isSending, setIsSending] = useState(false);
   const [isWarmingUp, setIsWarmingUp] = useState(false);
+  const [waitingPhraseIndex, setWaitingPhraseIndex] = useState(0);
   const [hasStartedConversation, setHasStartedConversation] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const messagesRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
   const hasStartedStreamingReply = messages.at(-1)?.role === "assistant" && Boolean(messages.at(-1)?.content.trim());
+  const waitingPhrases = isWarmingUp ? warmingPhrases : thinkingPhrases;
+  const waitingPhrase = waitingPhrases[waitingPhraseIndex % waitingPhrases.length];
 
   useEffect(() => {
     messagesRef.current?.scrollTo({ top: messagesRef.current.scrollHeight, behavior: "smooth" });
@@ -32,6 +37,19 @@ export default function PortfolioChat() {
       sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, [hasStartedConversation]);
+
+  useEffect(() => {
+    if (!isSending || hasStartedStreamingReply) return;
+
+    const phraseTimer = window.setInterval(() => {
+      setWaitingPhraseIndex((currentIndex) => {
+        const nextIndex = Math.floor(Math.random() * waitingPhrases.length);
+        return nextIndex === currentIndex ? (nextIndex + 1) % waitingPhrases.length : nextIndex;
+      });
+    }, 1_800);
+
+    return () => window.clearInterval(phraseTimer);
+  }, [hasStartedStreamingReply, isSending, waitingPhrases.length]);
 
   async function readStreamedReply(response: Response) {
     if (!response.body) throw new Error("The portfolio assistant could not start streaming a response.");
@@ -87,6 +105,7 @@ export default function PortfolioChat() {
     setError(null);
     setIsSending(true);
     setIsWarmingUp(false);
+    setWaitingPhraseIndex(0);
     const warmupTimer = window.setTimeout(() => setIsWarmingUp(true), 3_000);
 
     try {
@@ -140,8 +159,8 @@ export default function PortfolioChat() {
       <div className="portfolio-chat-shell">
         <div className="portfolio-chat-topline"><span>ASK ZHIHONG</span><span>Public portfolio knowledge</span></div>
         <div className="portfolio-chat-messages" ref={messagesRef} aria-live="polite">
-          {messages.map((message, index) => <p className={`portfolio-chat-message ${message.role}`} key={`${message.role}-${index}`}>{message.content}</p>)}
-          {isSending && !hasStartedStreamingReply && <p className="portfolio-chat-message assistant loading">{isWarmingUp ? "The assistant is preparing an answer — this can take up to a minute." : "Thinking…"}</p>}
+          {messages.filter((message) => message.content.trim()).map((message, index) => <p className={`portfolio-chat-message ${message.role}`} key={`${message.role}-${index}`}>{message.content}</p>)}
+          {isSending && !hasStartedStreamingReply && <p className="portfolio-chat-message assistant loading">{waitingPhrase}</p>}
         </div>
         {messages.length === 1 && <div className="portfolio-chat-suggestions" aria-label="Suggested questions">
           {suggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => void sendMessage(suggestion)} disabled={isSending}>{suggestion} <span aria-hidden="true">↗</span></button>)}
