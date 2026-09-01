@@ -29,6 +29,10 @@ npm run start  # run production build locally
 
 Database, authentication, i18n, UI kits, testing, and deployment integrations can be added when a concrete site feature requires them.
 
+## Portfolio chat
+
+The optional portfolio chat uses a Modal-hosted model behind a Next.js API route. It is intentionally unavailable until deployment secrets are configured; see [docs/portfolio-chat.md](docs/portfolio-chat.md) for the architecture, Modal setup, and production rate-limit requirement.
+
 ## Project guidance
 
 - [AGENTS.md](AGENTS.md) defines the development workflow and quality bar.

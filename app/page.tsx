@@ -1,6 +1,7 @@
 import CadenceGallery from "./components/cadence-gallery";
 import AgentToolsArt from "./components/agent-tools-art";
 import InventionDisclosureGallery from "./components/invention-disclosure-gallery";
+import PortfolioChat from "./components/portfolio-chat";
 import TZHProductPreview from "./components/tzh-product-preview";
 import Image from "next/image";
 
@@ -82,6 +83,7 @@ export default function Home() {
 
       <section className="contact" id="contact" aria-labelledby="contact-title"><p className="eyebrow light">GET IN TOUCH</p><h2 id="contact-title">Let&apos;s make<br />{" "}<em>something useful.</em></h2><a className="button button-light" href="mailto:zhihong0924@gmail.com">zhihong0924@gmail.com <span aria-hidden="true">↗</span></a><div className="contact-links" aria-label="Other ways to get in touch"><a href="https://www.linkedin.com/in/zhi-hong-chong/" target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a href="tel:+60134044212">+60 13-404 4212 <span aria-hidden="true">↗</span></a></div><p className="contact-note">Available for thoughtful engineering and automation conversations.</p></section>
       <footer><span>© 2026 Chong Zhi Hong</span><a href="#top">Back to top ↑</a></footer>
+      <PortfolioChat />
     </main>
   );
 }

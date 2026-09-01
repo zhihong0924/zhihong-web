@@ -10,7 +10,7 @@ The page takes inspiration from the reference site's editorial hierarchy: restra
 
 ## Page sections
 
-1. Sticky navigation with anchor links.
+1. Sticky navigation with anchor links and an optional accessible portfolio-chat launcher.
 2. Hero introducing Zhihong and a visual placeholder for a future portrait or video.
 3. Brief profile and focus areas.
 4. Selected-work cards with placeholder project details.
@@ -32,9 +32,11 @@ The Schematic Migration Automation project card uses the supplied schematic canv
 
 The Engineering Agents card uses supplied Codex and GitHub Copilot reference artwork as two equal, edge-to-edge image fields. Keep the presentation minimal: no background artwork, frames, or mock workspace.
 
+The portfolio chat is a client-side panel backed by a same-origin API route. It is optional, keyboard accessible, and should make its unavailable state clear when the provider is not configured. The assistant is constrained to a curated public profile; implementation, security boundaries, and deployment instructions live in [portfolio-chat.md](portfolio-chat.md).
+
 ## Acceptance criteria
 
-- Works as a single static page without a database or client-side JavaScript.
+- Works as a single static page without a database; the optional chat panel is the only client-side interactive feature.
 - Navigation anchors work with keyboard and pointer input.
 - Layout is readable and complete on mobile and desktop.
 - Visual design does not reuse the reference site's images, logo, copy, or branding.
