@@ -7,12 +7,14 @@ The portfolio can offer a small, optional chat panel for visitors to ask public,
 ## Architecture
 
 ```text
-Browser chat panel -> POST /api/chat -> Modal shared LLM endpoint
+Browser chat panel -> POST /api/chat -> Modal model backend
 ```
 
 The browser only calls the same-origin Next.js route. The route owns the curated professional context and retrieves the `MODAL_PROXY_TOKEN` from Vercel environment variables. The Modal token is never sent to the browser or committed to the repository.
 
-Modal hosts the selected Qwen model through a managed Endpoint. Its OpenAI-compatible API is called using the endpoint URL shown in the Modal dashboard and the base Qwen repository ID supplied as environment variables.
+The default backend is a Modal managed Endpoint. Its OpenAI-compatible API is called using the endpoint URL shown in the Modal dashboard and the base Qwen repository ID supplied as environment variables.
+
+For a lower-cost cold-start experiment, `modal_cpu_chat.py` defines a separate, CPU-only Modal Web Function. It runs Qwen 0.8B from a persistent Modal Volume with four physical CPU cores and keeps a used container alive for five minutes. Its protected URL is selected by `MODAL_CPU_CHAT_URL`; removing that variable immediately returns the site to the managed GPU Endpoint.
 
 ## Presentation
 
@@ -26,7 +28,7 @@ The chat is a primary, in-page experience immediately after the hero rather than
 - Keep requests small: at most six short conversation messages; limit model output to 280 tokens.
 - The route retries temporary Modal warm-up failures for up to roughly one minute. While it waits, the interface tells the visitor that the AI assistant is starting; if it remains unavailable, it gives a specific warm-up message instead of a generic error.
 - Do not store conversations or add a database for the initial release.
-- Keep the chat unavailable until both Modal environment variables are configured.
+- Keep the chat unavailable until `MODAL_PROXY_TOKEN` and either the managed Endpoint variables or `MODAL_CPU_CHAT_URL` are configured.
 - Before enabling production chat, add a Vercel WAF rate-limit rule for `POST /api/chat`. A client-side cooldown is only a usability aid, not abuse protection.
 
 ## Setup and deployment
@@ -71,6 +73,29 @@ The chat is a primary, in-page experience immediately after the hero rather than
 ## Local development
 
 Local UI development does not require Modal credentials. Without all three variables, the route returns an intentional configuration error and the chat panel displays an unavailable state. Add the three variables only to an ignored local `.env` file if end-to-end testing is needed.
+
+## CPU-only experiment
+
+The managed Endpoint currently does not expose a CPU-only setting. To test a CPU backend without deleting it:
+
+1. Deploy the custom Modal Web Function from this repository:
+
+   ```bash
+   modal deploy modal_cpu_chat.py
+   ```
+
+   The command prints a protected URL ending in `modal.run`. The first deployment/request downloads the model into a Modal Volume. Later containers reuse those cached weights.
+
+2. Add these Vercel and local `.env` variables, then redeploy/restart Next.js:
+
+   ```text
+   MODAL_PROXY_TOKEN=wk-...ws-...
+   MODAL_CPU_CHAT_URL=https://<workspace>--zhihong-portfolio-cpu-chat.modal.run
+   ```
+
+   Leave the existing `MODAL_API_BASE_URL` and `MODAL_MODEL_ID` values in place. They are ignored while `MODAL_CPU_CHAT_URL` exists, making rollback a one-variable change.
+
+3. Test a short factual question. The CPU container scales to zero when unused and remains warm for five minutes after a request. Watch startup time, response time, and CPU/memory cost in the Modal dashboard before deciding whether to keep it.
 
 ## Future work
 

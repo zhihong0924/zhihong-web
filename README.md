@@ -31,7 +31,7 @@ Database, authentication, i18n, UI kits, testing, and deployment integrations ca
 
 ## Portfolio chat
 
-The optional portfolio chat uses a Modal-hosted model behind a Next.js API route. It is intentionally unavailable until deployment secrets are configured; see [docs/portfolio-chat.md](docs/portfolio-chat.md) for the architecture, Modal setup, and production rate-limit requirement.
+The optional portfolio chat uses a Modal-hosted model behind a Next.js API route. It supports the default managed GPU Endpoint and a separate, reversible CPU-only experiment. It is intentionally unavailable until deployment secrets are configured; see [docs/portfolio-chat.md](docs/portfolio-chat.md) for architecture, setup, rollback, and the production rate-limit requirement.
 
 ## Project guidance
 

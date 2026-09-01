@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 export const maxDuration = 60;
 
 const MODAL_API_BASE_URL = process.env.MODAL_API_BASE_URL ?? "https://inference.us-west.modal.direct/v1";
+const MODAL_CPU_CHAT_URL = process.env.MODAL_CPU_CHAT_URL?.replace(/\/$/, "");
 const MAX_MESSAGES = 6;
 const MAX_MESSAGE_LENGTH = 700;
 const TRANSIENT_MODAL_STATUSES = new Set([429, 502, 503, 504]);
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
   const modalToken = process.env.MODAL_PROXY_TOKEN;
   const modalModelId = process.env.MODAL_MODEL_ID;
 
-  if (!modalToken || !modalModelId) {
+  if (!modalToken || (!MODAL_CPU_CHAT_URL && !modalModelId)) {
     return NextResponse.json(
       { error: "The portfolio assistant is not configured yet." },
       { status: 503, headers: { "Cache-Control": "no-store" } },
@@ -98,18 +99,26 @@ export async function POST(request: Request) {
       }
 
       try {
-        response = await fetch(`${MODAL_API_BASE_URL}/chat/completions`, {
+        const endpointUrl = MODAL_CPU_CHAT_URL ?? `${MODAL_API_BASE_URL}/chat/completions`;
+        const requestBody = MODAL_CPU_CHAT_URL
+          ? {
+              messages: [{ role: "system", content: portfolioContext }, ...messages],
+              max_tokens: 220,
+            }
+          : {
+              model: modalModelId,
+              messages: [{ role: "system", content: portfolioContext }, ...messages],
+              max_tokens: 280,
+              temperature: 0.2,
+            };
+
+        response = await fetch(endpointUrl, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${modalToken}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            model: modalModelId,
-            messages: [{ role: "system", content: portfolioContext }, ...messages],
-            max_tokens: 280,
-            temperature: 0.2,
-          }),
+          body: JSON.stringify(requestBody),
           signal: AbortSignal.timeout(Math.min(12_000, remainingTime)),
           cache: "no-store",
         });
@@ -142,10 +151,11 @@ export async function POST(request: Request) {
     }
 
     const payload = await response.json() as {
+      reply?: string;
       choices?: Array<{ message?: { content?: string; reasoning_content?: string } }>;
     };
     const message = payload.choices?.[0]?.message;
-    const reply = message?.content?.trim() || message?.reasoning_content?.trim();
+    const reply = payload.reply?.trim() || message?.content?.trim() || message?.reasoning_content?.trim();
 
     if (!reply) {
       return NextResponse.json(
