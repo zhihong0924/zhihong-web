@@ -33,6 +33,10 @@ Database, authentication, i18n, UI kits, testing, and deployment integrations ca
 
 The optional portfolio chat uses a Modal-hosted model behind a Next.js API route. It supports the default managed GPU Endpoint and a separate, reversible CPU-only experiment. It is intentionally unavailable until deployment secrets are configured; see [docs/portfolio-chat.md](docs/portfolio-chat.md) for architecture, setup, rollback, and the production rate-limit requirement.
 
+## Analytics
+
+Vercel Web Analytics is enabled site-wide through `@vercel/analytics`. It records production visits after the site is deployed on Vercel; view results in the project’s Analytics tab.
+
 ## Project guidance
 
 - [AGENTS.md](AGENTS.md) defines the development workflow and quality bar.
