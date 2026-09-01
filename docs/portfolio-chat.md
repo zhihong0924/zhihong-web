@@ -18,7 +18,7 @@ For a lower-cost cold-start experiment, `modal_cpu_chat.py` defines a separate, 
 
 ## Presentation
 
-The chat is a primary, in-page experience immediately after the hero rather than a floating support widget. It opens with curated questions and a large prompt. Once a visitor sends their first question, the introductory editorial copy disappears and the interface becomes a full-bleed dark conversation workspace, with messages and the composer centered in a readable column. This keeps the homepage approachable while giving an active conversation the space it needs.
+The chat is a primary, in-page experience immediately after the hero rather than a floating support widget. It opens with curated questions and a large prompt. Once a visitor sends their first question, the introductory editorial copy disappears and the interface becomes a full-bleed light conversation workspace, with messages and the composer centered in a readable column. This keeps the homepage approachable while giving an active conversation the space it needs.
 
 ## Boundaries and safety
 
