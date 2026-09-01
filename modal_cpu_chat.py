@@ -51,7 +51,7 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     messages: list[ChatMessage] = Field(min_length=1, max_length=7)
-    max_tokens: int = Field(default=220, ge=1, le=280)
+    max_tokens: int = Field(default=120, ge=1, le=120)
     stream: bool = False
 
 

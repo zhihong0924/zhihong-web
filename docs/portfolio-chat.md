@@ -25,7 +25,7 @@ The chat is a primary, in-page experience immediately after the hero rather than
 - Answer only using the curated, public portfolio context in `app/api/chat/route.ts`.
 - If the information is not present, answer that it is not included in the published portfolio rather than guessing.
 - Do not expose private, personal, credential, employer-confidential, or visitor-provided sensitive information.
-- Keep requests small: at most six short conversation messages; limit model output to 280 tokens.
+- Keep requests small: at most six short conversation messages; limit model output to 120 tokens and direct it to stay within 90 words unless the visitor explicitly asks for more detail.
 - The managed GPU Endpoint retries temporary warm-up failures for up to roughly one minute. The CPU experiment instead permits one request to run for up to 55 seconds, because its normal CPU generation time can exceed the GPU backend's short per-attempt timeout. This avoids aborting healthy CPU inference and creating duplicate generations.
 - Do not store conversations or add a database for the initial release.
 - Keep the chat unavailable until `MODAL_PROXY_TOKEN` and either the managed Endpoint variables or `MODAL_CPU_CHAT_URL` are configured.
