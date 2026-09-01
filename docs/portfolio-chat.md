@@ -22,6 +22,7 @@ The chat is a primary, in-page experience immediately after the hero rather than
 
 ## Boundaries and safety
 
+- Reject requests outside Zhihong's published professional profile, projects, experience, recognition, or public contact options before calling Modal. This deterministic topic gate also rejects prompt-injection-shaped requests; the model receives only in-scope questions.
 - Answer only using the curated, public portfolio context in `app/api/chat/route.ts`.
 - If the information is not present, answer that it is not included in the published portfolio rather than guessing.
 - Do not expose private, personal, credential, employer-confidential, or visitor-provided sensitive information.
