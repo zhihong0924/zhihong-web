@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 export const maxDuration = 60;
 
-const MODAL_API_BASE_URL = process.env.MODAL_API_BASE_URL ?? "https://inference.us-west.modal.direct/v1";
 const MAX_MESSAGES = 6;
 const MAX_MESSAGE_LENGTH = 700;
 
@@ -58,9 +57,9 @@ function parseMessages(value: unknown): ChatMessage[] | null {
 
 export async function POST(request: Request) {
   const modalToken = process.env.MODAL_PROXY_TOKEN;
-  const modalModelId = process.env.MODAL_MODEL_ID;
+  const modalChatUrl = process.env.MODAL_CHAT_URL;
 
-  if (!modalToken || !modalModelId) {
+  if (!modalToken || !modalChatUrl) {
     return NextResponse.json(
       { error: "The portfolio assistant is not configured yet." },
       { status: 503, headers: { "Cache-Control": "no-store" } },
@@ -80,17 +79,14 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await fetch(`${MODAL_API_BASE_URL}/chat/completions`, {
+    const response = await fetch(modalChatUrl, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${modalToken}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: modalModelId,
         messages: [{ role: "system", content: portfolioContext }, ...messages],
-        max_tokens: 280,
-        temperature: 0.2,
       }),
       signal: AbortSignal.timeout(55_000),
       cache: "no-store",
@@ -104,10 +100,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const payload = await response.json() as {
-      choices?: Array<{ message?: { content?: string } }>;
-    };
-    const reply = payload.choices?.[0]?.message?.content?.trim();
+    const payload = await response.json() as { reply?: string; error?: string };
+    const reply = payload.reply?.trim();
 
     if (!reply) {
       return NextResponse.json(
