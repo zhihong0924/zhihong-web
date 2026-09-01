@@ -167,7 +167,7 @@ export default function PortfolioChat() {
         <p>Use this chat as a quick guide to Zhihong&apos;s projects, engineering background, and practical approach to automation.</p>
       </div>}
       <div className="portfolio-chat-shell">
-        <div className="portfolio-chat-topline"><span>ASK ZHIHONG</span><span>Public portfolio knowledge</span></div>
+        <div className="portfolio-chat-topline"><span>ASK ZHIHONG <b className="portfolio-chat-beta">BETA</b></span><span>Public portfolio knowledge</span></div>
         <div className="portfolio-chat-messages" ref={messagesRef} aria-live="polite">
           {messages.filter((message) => message.content.trim()).map((message, index) => <p className={`portfolio-chat-message ${message.role}`} key={`${message.role}-${index}`}>{message.content}</p>)}
           {isSending && !hasStartedStreamingReply && <p className="portfolio-chat-message assistant loading">{waitingPhrase}</p>}
