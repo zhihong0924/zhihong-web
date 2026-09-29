@@ -10,7 +10,9 @@ const CONTEXT_PATH = path.join(process.cwd(), "content/portfolio-context.md");
 const MAX_RETRIEVED_SECTIONS = 3;
 const MAX_SECTION_CHARACTERS = 1_800;
 const MIN_RETRIEVAL_SCORE = 2;
-const STOP_WORDS = new Set(["about", "and", "are", "can", "does", "for", "from", "have", "his", "how", "me", "tell", "that", "the", "their", "what", "with", "you", "your", "zhihong", "chong"]);
+const STOP_WORDS = new Set(["about", "and", "are", "can", "did", "does", "for", "from", "has", "have", "his", "how", "me", "tell", "that", "the", "their", "what", "with", "you", "your", "zhihong", "chong"]);
+const GENERAL_WORK_TERMS = new Set(["build", "built", "created", "developed", "made", "portfolio", "project", "projects", "work", "worked", "works"]);
+const GENERAL_WORK_SECTIONS = ["Public projects and portfolio", "TZH Sports Centre", "Intel: schematic and testbench migration automation"];
 const GENERAL_PROFILE_QUERY_PATTERN = /\b(?:who\s+is|tell\s+me\s+about)\s+(?:zhihong|chong(?:\s+zhi\s+hong)?)\b|\b(?:experience|background|career|role|skills?)\b/i;
 
 function tokenize(value: string) {
@@ -60,8 +62,11 @@ export async function getRelevantPortfolioContext(question: string) {
     .map((section) => ({ section, score: scoreSection(section, queryTerms) }))
     .filter(({ score }) => score >= MIN_RETRIEVAL_SCORE)
     .sort((left, right) => right.score - left.score);
+  const isGeneralWorkQuestion = queryTerms.length > 0 && queryTerms.every((term) => GENERAL_WORK_TERMS.has(term));
   const selectedSections = GENERAL_PROFILE_QUERY_PATTERN.test(question) && profileSection
     ? [profileSection, ...scoredSections.map(({ section }) => section).filter((section) => section !== profileSection)]
+    : isGeneralWorkQuestion
+      ? GENERAL_WORK_SECTIONS.flatMap((title) => sections.filter((section) => section.title === title))
     : scoredSections.map(({ section }) => section);
 
   return selectedSections
